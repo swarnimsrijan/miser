@@ -1,8 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Gradle Imported" enabled="true">
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.46/a5cfe99fdf320e84955ef653f2ce1bf789d11385/lombok-1.18.46.jar" />
+        </processorPath>
+        <module name="com.miser.moneyTracker.main" />
+        <module name="com.miser.moneyTracker.test" />
+      </profile>
+    </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="moneyTracker" target="25" />
+      <module name="moneyTracker.main" target="25" />
+      <module name="moneyTracker.test" target="25" />
     </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="com.miser.moneyTracker.main" options="-parameters" />
+      <module name="com.miser.moneyTracker.test" options="-parameters" />
+      <module name="moneyTracker" options="-parameters" />
+    </option>
   </component>
 </project>
