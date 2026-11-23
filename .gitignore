@@ -1,0 +1,11 @@
+# Secrets
+.env
+.env.prod
+
+# OS / editor
+.DS_Store
+.idea/inspectionProfiles/
+.claude/settings.local.json
+
+# Build output
+out/

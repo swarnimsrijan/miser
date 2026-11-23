@@ -1,0 +1,60 @@
+package com.miser.moneyTracker.statement;
+
+import com.miser.moneyTracker.account.Account;
+import com.miser.moneyTracker.creditcard.CreditCard;
+import com.miser.moneyTracker.user.User;
+import jakarta.persistence.*;
+import lombok.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "statements")
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+public class Statement {
+
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "account_id")
+    private Account account;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "credit_card_id")
+    private CreditCard creditCard;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "statement_type", nullable = false)
+    private StatementType statementType;
+
+    @Column(name = "file_url", nullable = false)
+    private String fileUrl;
+
+    private String checksum;
+
+    @Column(nullable = false)
+    private String status;
+
+    @Column(name = "uploaded_at", nullable = false, updatable = false)
+    private LocalDateTime uploadedAt;
+
+    @Column(name = "from_date")
+    private LocalDate fromDate;
+
+    @Column(name = "to_date")
+    private LocalDate toDate;
+
+    /** Issuer code detected from the document (e.g. "HDFC"), or the linked bank. */
+    private String issuer;
+
+    @Column(name = "parser_layout")
+    private String parserLayout;
+
+    @PrePersist
+    protected void onCreate() { uploadedAt = LocalDateTime.now(); }
+}
