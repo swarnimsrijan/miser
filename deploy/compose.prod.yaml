@@ -1,0 +1,126 @@
+# Single-host production stack: one VM (EC2/Lightsail or any VPS) running Docker.
+# Only Caddy is published. It binds to PUBLIC_BIND (default 127.0.0.1, i.e.
+# private) and you set PUBLIC_BIND=0.0.0.0 deliberately when going live.
+# Datastores publish nothing. Keycloak's port goes to the host's loopback only,
+# for admin access over an SSH tunnel.
+#   cp .env.prod.example .env.prod && edit
+#   docker compose --env-file .env.prod -f compose.prod.yaml up -d --build
+name: miser
+
+services:
+  caddy:
+    build:
+      context: ../app
+      dockerfile: ../deploy/web.Dockerfile
+      args:
+        APP_DOMAIN: ${APP_DOMAIN:?set APP_DOMAIN}
+        AUTH_DOMAIN: ${AUTH_DOMAIN:?set AUTH_DOMAIN}
+    restart: unless-stopped
+    environment:
+      APP_DOMAIN: ${APP_DOMAIN}
+      AUTH_DOMAIN: ${AUTH_DOMAIN}
+    ports:
+      - '${PUBLIC_BIND:-127.0.0.1}:80:80'
+      - '${PUBLIC_BIND:-127.0.0.1}:443:443'
+    configs:
+      - source: caddyfile
+        target: /etc/caddy/Caddyfile
+    volumes:
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on: [backend, keycloak]
+
+  backend:
+    build: ../moneyTracker
+    restart: unless-stopped
+    environment:
+      SERVER_ADDRESS: 0.0.0.0          # container-internal; no port is published
+      SPRING_DOCKER_COMPOSE_ENABLED: 'false'
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/miser
+      SPRING_DATASOURCE_USERNAME: miser
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+      SPRING_DATA_REDIS_HOST: redis
+      OIDC_ISSUER_URI: https://${AUTH_DOMAIN}/realms/miser
+      CORS_ALLOWED_ORIGINS: https://${APP_DOMAIN}
+      STORAGE_TYPE: s3
+      S3_ENDPOINT: ${S3_ENDPOINT:-http://seaweedfs:8333}
+      S3_BUCKET: ${S3_BUCKET:-miser-statements}
+      S3_REGION: ${S3_REGION:-us-east-1}
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY:-}
+      S3_SECRET_KEY: ${S3_SECRET_KEY:-}
+      S3_CREATE_BUCKET: ${S3_CREATE_BUCKET:-true}
+      S3_SSE: ${S3_SSE:-false}
+    depends_on: [postgres, redis, keycloak]
+
+  keycloak:
+    build: ../moneyTracker/infra/keycloak
+    restart: unless-stopped
+    command: ['start', '--import-realm']
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD:?set KEYCLOAK_DB_PASSWORD}
+      KC_HOSTNAME: https://${AUTH_DOMAIN}
+      KC_HTTP_ENABLED: 'true'          # TLS terminates at Caddy on the private network
+      KC_PROXY_HEADERS: xforwarded
+      KC_HEALTH_ENABLED: 'true'
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:?set KEYCLOAK_ADMIN_PASSWORD}
+    ports:
+      - '127.0.0.1:8180:8080'           # admin access via SSH tunnel only
+    depends_on: [postgres]
+
+  postgres:
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: miser
+      POSTGRES_USER: miser
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      KEYCLOAK_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
+    configs:
+      - source: keycloak-db-init
+        target: /docker-entrypoint-initdb.d/10-keycloak.sh
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    restart: unless-stopped
+    command: ['redis-server', '--save', '', '--appendonly', 'no']
+
+  # Drop this service and point S3_* at Amazon S3 to use AWS instead.
+  seaweedfs:
+    image: chrislusf/seaweedfs:latest
+    restart: unless-stopped
+    entrypoint: ['/bin/sh', '-c']
+    command:
+      - |
+        umask 077
+        printf '{"identities":[{"name":"miser","credentials":[{"accessKey":"%s","secretKey":"%s"}],"actions":["Admin","Read","Write","List","Tagging"]}]}' \
+          "$$S3_ACCESS_KEY" "$$S3_SECRET_KEY" > /tmp/s3.json
+        exec weed server -dir=/data -s3 -s3.port=8333 -s3.config=/tmp/s3.json -master.volumeSizeLimitMB=1024 -volume.max=100
+    environment:
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY:?set S3_ACCESS_KEY}
+      S3_SECRET_KEY: ${S3_SECRET_KEY:?set S3_SECRET_KEY}
+    volumes:
+      - seaweedfs-data:/data
+
+configs:
+  caddyfile:
+    file: ./Caddyfile
+  keycloak-db-init:
+    content: |
+      #!/bin/sh
+      set -e
+      psql -v ON_ERROR_STOP=1 -v pw="$$KEYCLOAK_DB_PASSWORD" --username "$$POSTGRES_USER" --dbname "$$POSTGRES_DB" <<'SQL'
+      CREATE USER keycloak WITH PASSWORD :'pw';
+      CREATE DATABASE keycloak OWNER keycloak;
+      SQL
+
+volumes:
+  caddy-data:
+  caddy-config:
+  postgres-data:
+  seaweedfs-data:

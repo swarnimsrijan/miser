@@ -1,0 +1,53 @@
+# Public entry point. Automatic HTTPS (Let's Encrypt) for both hosts.
+{$APP_DOMAIN} {
+	encode zstd gzip
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+		X-Frame-Options DENY
+		-Server
+	}
+	# API (every /api route requires a Keycloak token; enforced by the backend)
+	handle /api/* {
+		request_body {
+			max_size 25MB
+		}
+		reverse_proxy backend:8080
+	}
+	handle /actuator/health {
+		reverse_proxy backend:8080
+	}
+	# API docs and everything else under /actuator stay internal.
+	handle /v3/api-docs* {
+		respond 404
+	}
+	handle /swagger-ui* {
+		respond 404
+	}
+	handle /actuator/* {
+		respond 404
+	}
+	# Flutter web app (single-page app routing)
+	handle {
+		root * /srv
+		try_files {path} /index.html
+		file_server
+	}
+}
+
+{$AUTH_DOMAIN} {
+	encode zstd gzip
+	header Strict-Transport-Security "max-age=31536000; includeSubDomains"
+	# The Keycloak admin console is not published; reach it through an SSH tunnel
+	# to 127.0.0.1:8180 on the server (see deploy/README.md).
+	handle /admin* {
+		respond 404
+	}
+	handle /realms/master* {
+		respond 404
+	}
+	handle {
+		reverse_proxy keycloak:8080
+	}
+}
