@@ -11,4 +11,10 @@
 - Then move to Frontend
 - Then to application interface
 
-## Lets focus on bulding the backend first
+## Lets focus on building the backend first
+
+
+## Flow of the backend 
+- User onboarding (email + github)
+- Statement upload 
+- Das
