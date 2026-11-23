@@ -1,0 +1,2169 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "OpenAPI definition",
+        "version": "v0"
+    },
+    "servers": [
+        {
+            "url": "http://127.0.0.1:8080",
+            "description": "Generated server url"
+        }
+    ],
+    "paths": {
+        "/api/budgets/{categoryId}": {
+            "put": {
+                "tags": [
+                    "budget-controller"
+                ],
+                "operationId": "upsert",
+                "parameters": [
+                    {
+                        "name": "categoryId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BudgetRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BudgetResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "budget-controller"
+                ],
+                "operationId": "delete",
+                "parameters": [
+                    {
+                        "name": "categoryId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            }
+        },
+        "/api/statements/upload": {
+            "post": {
+                "tags": [
+                    "statement-controller"
+                ],
+                "operationId": "upload",
+                "parameters": [
+                    {
+                        "name": "accountId",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    },
+                    {
+                        "name": "creditCardId",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    },
+                    {
+                        "name": "password",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "required": [
+                                    "file"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/StatementResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/reconciliation/run": {
+            "post": {
+                "tags": [
+                    "reconciliation-controller"
+                ],
+                "operationId": "run",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReconciliationResult"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/planner/what-if": {
+            "post": {
+                "tags": [
+                    "planner-controller"
+                ],
+                "operationId": "whatIf",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WhatIfRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WhatIfResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/goals": {
+            "get": {
+                "tags": [
+                    "goal-controller"
+                ],
+                "operationId": "list",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/GoalResponse"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "goal-controller"
+                ],
+                "operationId": "create",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateGoalRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GoalResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/goals/{id}/contributions": {
+            "post": {
+                "tags": [
+                    "goal-controller"
+                ],
+                "operationId": "contribute",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ContributionRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GoalResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/credit-cards": {
+            "get": {
+                "tags": [
+                    "credit-card-controller"
+                ],
+                "operationId": "getAll",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/CreditCardResponse"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "credit-card-controller"
+                ],
+                "operationId": "create_1",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateCreditCardRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CreditCardResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/accounts": {
+            "get": {
+                "tags": [
+                    "account-controller"
+                ],
+                "operationId": "getAll_1",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/AccountResponse"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "account-controller"
+                ],
+                "operationId": "create_2",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateAccountRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AccountResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/transactions/{id}/transfer": {
+            "patch": {
+                "tags": [
+                    "transaction-controller"
+                ],
+                "operationId": "updateTransfer",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "additionalProperties": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TransactionResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/transactions/{id}/category": {
+            "patch": {
+                "tags": [
+                    "transaction-controller"
+                ],
+                "operationId": "updateCategory",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateTransactionCategoryRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TransactionResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/goals/{id}": {
+            "delete": {
+                "tags": [
+                    "goal-controller"
+                ],
+                "operationId": "delete_1",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "goal-controller"
+                ],
+                "operationId": "update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateGoalRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GoalResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/transactions": {
+            "get": {
+                "tags": [
+                    "transaction-controller"
+                ],
+                "operationId": "search",
+                "parameters": [
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "accountId",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    },
+                    {
+                        "name": "creditCardId",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    },
+                    {
+                        "name": "categoryId",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "CREDIT",
+                                "DEBIT"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32",
+                            "default": 0
+                        }
+                    },
+                    {
+                        "name": "size",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32",
+                            "default": 50
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PageTransactionResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/statements": {
+            "get": {
+                "tags": [
+                    "statement-controller"
+                ],
+                "operationId": "getAll_2",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/StatementResponse"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/reports/pdf": {
+            "get": {
+                "tags": [
+                    "report-controller"
+                ],
+                "operationId": "pdf",
+                "parameters": [
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "byte"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/reports/excel": {
+            "get": {
+                "tags": [
+                    "report-controller"
+                ],
+                "operationId": "excel",
+                "parameters": [
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "byte"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/reports/csv": {
+            "get": {
+                "tags": [
+                    "report-controller"
+                ],
+                "operationId": "csv",
+                "parameters": [
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "byte"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/planner/forecast": {
+            "get": {
+                "tags": [
+                    "planner-controller"
+                ],
+                "operationId": "forecast",
+                "parameters": [
+                    {
+                        "name": "months",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32",
+                            "default": 12
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WhatIfResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/me": {
+            "get": {
+                "tags": [
+                    "me-controller"
+                ],
+                "operationId": "me",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MeResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/insights/tips": {
+            "get": {
+                "tags": [
+                    "insight-controller"
+                ],
+                "operationId": "tips",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Tip"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/insights/recurring": {
+            "get": {
+                "tags": [
+                    "insight-controller"
+                ],
+                "operationId": "recurring",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/RecurringPayment"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/dashboard/summary": {
+            "get": {
+                "tags": [
+                    "dashboard-controller"
+                ],
+                "operationId": "summary",
+                "parameters": [
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": {}
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/dashboard/networth": {
+            "get": {
+                "tags": [
+                    "dashboard-controller"
+                ],
+                "operationId": "networth",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": {}
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/dashboard/monthly": {
+            "get": {
+                "tags": [
+                    "dashboard-controller"
+                ],
+                "operationId": "monthly",
+                "parameters": [
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "additionalProperties": {}
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/dashboard/merchant": {
+            "get": {
+                "tags": [
+                    "dashboard-controller"
+                ],
+                "operationId": "byMerchant",
+                "parameters": [
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32",
+                            "default": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "additionalProperties": {}
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/dashboard/category": {
+            "get": {
+                "tags": [
+                    "dashboard-controller"
+                ],
+                "operationId": "byCategory",
+                "parameters": [
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "additionalProperties": {}
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/dashboard/cashflow": {
+            "get": {
+                "tags": [
+                    "dashboard-controller"
+                ],
+                "operationId": "cashflow",
+                "parameters": [
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": {}
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/categories": {
+            "get": {
+                "tags": [
+                    "category-controller"
+                ],
+                "operationId": "getAll_3",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Category"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/categories/{id}/subcategories": {
+            "get": {
+                "tags": [
+                    "category-controller"
+                ],
+                "operationId": "getSubCategories",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/SubCategory"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/budgets": {
+            "get": {
+                "tags": [
+                    "budget-controller"
+                ],
+                "operationId": "list_1",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/BudgetResponse"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/budgets/status": {
+            "get": {
+                "tags": [
+                    "budget-controller"
+                ],
+                "operationId": "status",
+                "parameters": [
+                    {
+                        "name": "month",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/BudgetStatus"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/banks": {
+            "get": {
+                "tags": [
+                    "bank-controller"
+                ],
+                "operationId": "getAll_4",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Bank"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/statements/{id}": {
+            "delete": {
+                "tags": [
+                    "statement-controller"
+                ],
+                "operationId": "delete_2",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "BudgetRequest": {
+                "type": "object",
+                "properties": {
+                    "monthlyLimit": {
+                        "type": "number",
+                        "minimum": 0.01
+                    },
+                    "alertThresholdPercent": {
+                        "type": "integer",
+                        "format": "int32",
+                        "maximum": 100,
+                        "minimum": 1
+                    }
+                }
+            },
+            "BudgetResponse": {
+                "type": "object",
+                "properties": {
+                    "categoryId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "category": {
+                        "type": "string"
+                    },
+                    "monthlyLimit": {
+                        "type": "number"
+                    },
+                    "alertThresholdPercent": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                }
+            },
+            "StatementResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "statementType": {
+                        "type": "string",
+                        "enum": [
+                            "PDF",
+                            "CSV",
+                            "XLSX"
+                        ]
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "accountId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "creditCardId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "fromDate": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "toDate": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "uploadedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "issuer": {
+                        "type": "string"
+                    },
+                    "parserLayout": {
+                        "type": "string"
+                    },
+                    "transactionCount": {
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                }
+            },
+            "ReconciliationResult": {
+                "type": "object",
+                "properties": {
+                    "linkedPairs": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                }
+            },
+            "CategoryChange": {
+                "type": "object",
+                "properties": {
+                    "categoryId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "changePercent": {
+                        "type": "number",
+                        "minimum": -100
+                    }
+                }
+            },
+            "OneOff": {
+                "type": "object",
+                "properties": {
+                    "month": {
+                        "type": "string"
+                    },
+                    "amount": {
+                        "type": "number"
+                    },
+                    "label": {
+                        "type": "string",
+                        "maxLength": 100,
+                        "minLength": 0
+                    }
+                }
+            },
+            "WhatIfRequest": {
+                "type": "object",
+                "properties": {
+                    "months": {
+                        "type": "integer",
+                        "format": "int32",
+                        "maximum": 60,
+                        "minimum": 1
+                    },
+                    "incomeChangePercent": {
+                        "type": "number",
+                        "minimum": -100
+                    },
+                    "extraMonthlyIncome": {
+                        "type": "number"
+                    },
+                    "categoryChanges": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CategoryChange"
+                        }
+                    },
+                    "oneOffs": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/OneOff"
+                        }
+                    }
+                }
+            },
+            "CategoryLine": {
+                "type": "object",
+                "properties": {
+                    "categoryId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "category": {
+                        "type": "string"
+                    },
+                    "baselineMonthly": {
+                        "type": "number"
+                    },
+                    "scenarioMonthly": {
+                        "type": "number"
+                    }
+                }
+            },
+            "GoalEta": {
+                "type": "object",
+                "properties": {
+                    "goalId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "targetDate": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "baselineCompletion": {
+                        "type": "string"
+                    },
+                    "scenarioCompletion": {
+                        "type": "string"
+                    }
+                }
+            },
+            "ProjectedMonth": {
+                "type": "object",
+                "properties": {
+                    "month": {
+                        "type": "string"
+                    },
+                    "income": {
+                        "type": "number"
+                    },
+                    "expense": {
+                        "type": "number"
+                    },
+                    "savings": {
+                        "type": "number"
+                    },
+                    "cumulativeSavings": {
+                        "type": "number"
+                    }
+                }
+            },
+            "Scenario": {
+                "type": "object",
+                "properties": {
+                    "monthlyIncome": {
+                        "type": "number"
+                    },
+                    "monthlyExpense": {
+                        "type": "number"
+                    },
+                    "monthlySavings": {
+                        "type": "number"
+                    },
+                    "totalSavings": {
+                        "type": "number"
+                    },
+                    "months": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ProjectedMonth"
+                        }
+                    }
+                }
+            },
+            "WhatIfResponse": {
+                "type": "object",
+                "properties": {
+                    "basedOn": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "baseline": {
+                        "$ref": "#/components/schemas/Scenario"
+                    },
+                    "scenario": {
+                        "$ref": "#/components/schemas/Scenario"
+                    },
+                    "monthlySavingsDelta": {
+                        "type": "number"
+                    },
+                    "categories": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CategoryLine"
+                        }
+                    },
+                    "goals": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/GoalEta"
+                        }
+                    }
+                }
+            },
+            "CreateGoalRequest": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "maxLength": 255,
+                        "minLength": 0
+                    },
+                    "targetAmount": {
+                        "type": "number",
+                        "minimum": 0.01
+                    },
+                    "targetDate": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "savedAmount": {
+                        "type": "number",
+                        "minimum": 0
+                    },
+                    "priority": {
+                        "type": "integer",
+                        "format": "int32",
+                        "maximum": 5,
+                        "minimum": 1
+                    }
+                },
+                "required": [
+                    "name"
+                ]
+            },
+            "GoalResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "targetAmount": {
+                        "type": "number"
+                    },
+                    "savedAmount": {
+                        "type": "number"
+                    },
+                    "remaining": {
+                        "type": "number"
+                    },
+                    "percentComplete": {
+                        "type": "number"
+                    },
+                    "targetDate": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "priority": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "ACTIVE",
+                            "ACHIEVED",
+                            "PAUSED"
+                        ]
+                    },
+                    "requiredMonthly": {
+                        "type": "number"
+                    },
+                    "projectedCompletion": {
+                        "type": "string"
+                    },
+                    "onTrack": {
+                        "type": "boolean"
+                    }
+                }
+            },
+            "ContributionRequest": {
+                "type": "object",
+                "properties": {
+                    "amount": {
+                        "type": "number"
+                    },
+                    "note": {
+                        "type": "string",
+                        "maxLength": 255,
+                        "minLength": 0
+                    }
+                }
+            },
+            "CreateCreditCardRequest": {
+                "type": "object",
+                "properties": {
+                    "bankId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "cardName": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "maskedNumber": {
+                        "type": "string"
+                    },
+                    "creditLimit": {
+                        "type": "number"
+                    },
+                    "billingDate": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "dueDate": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "currency": {
+                        "type": "string",
+                        "minLength": 1
+                    }
+                },
+                "required": [
+                    "bankId",
+                    "cardName",
+                    "currency"
+                ]
+            },
+            "CreditCardResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "bankId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "bankName": {
+                        "type": "string"
+                    },
+                    "cardName": {
+                        "type": "string"
+                    },
+                    "maskedNumber": {
+                        "type": "string"
+                    },
+                    "creditLimit": {
+                        "type": "number"
+                    },
+                    "billingDate": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "dueDate": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "currency": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "CreateAccountRequest": {
+                "type": "object",
+                "properties": {
+                    "bankId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "nickname": {
+                        "type": "string"
+                    },
+                    "accountNumberMasked": {
+                        "type": "string"
+                    },
+                    "accountType": {
+                        "type": "string",
+                        "enum": [
+                            "SAVINGS",
+                            "CURRENT",
+                            "SALARY",
+                            "FD",
+                            "RD"
+                        ]
+                    },
+                    "currency": {
+                        "type": "string",
+                        "minLength": 1
+                    }
+                },
+                "required": [
+                    "accountType",
+                    "bankId",
+                    "currency"
+                ]
+            },
+            "AccountResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "bankId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "bankName": {
+                        "type": "string"
+                    },
+                    "nickname": {
+                        "type": "string"
+                    },
+                    "accountNumberMasked": {
+                        "type": "string"
+                    },
+                    "accountType": {
+                        "type": "string",
+                        "enum": [
+                            "SAVINGS",
+                            "CURRENT",
+                            "SALARY",
+                            "FD",
+                            "RD"
+                        ]
+                    },
+                    "currency": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "TransactionResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "transactionDate": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "merchant": {
+                        "type": "string"
+                    },
+                    "categoryId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "category": {
+                        "type": "string"
+                    },
+                    "subCategoryId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "subCategory": {
+                        "type": "string"
+                    },
+                    "amount": {
+                        "type": "number"
+                    },
+                    "transactionType": {
+                        "type": "string",
+                        "enum": [
+                            "CREDIT",
+                            "DEBIT"
+                        ]
+                    },
+                    "balance": {
+                        "type": "number"
+                    },
+                    "currency": {
+                        "type": "string"
+                    },
+                    "reference": {
+                        "type": "string"
+                    },
+                    "accountId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "creditCardId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "transfer": {
+                        "type": "boolean"
+                    }
+                }
+            },
+            "UpdateTransactionCategoryRequest": {
+                "type": "object",
+                "properties": {
+                    "categoryId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "subCategoryId": {
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                },
+                "required": [
+                    "categoryId"
+                ]
+            },
+            "UpdateGoalRequest": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "maxLength": 255,
+                        "minLength": 0
+                    },
+                    "targetAmount": {
+                        "type": "number",
+                        "minimum": 0.01
+                    },
+                    "targetDate": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "priority": {
+                        "type": "integer",
+                        "format": "int32",
+                        "maximum": 5,
+                        "minimum": 1
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "ACTIVE",
+                            "ACHIEVED",
+                            "PAUSED"
+                        ]
+                    }
+                }
+            },
+            "PageTransactionResponse": {
+                "type": "object",
+                "properties": {
+                    "totalPages": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "totalElements": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "pageable": {
+                        "$ref": "#/components/schemas/PageableObject"
+                    },
+                    "first": {
+                        "type": "boolean"
+                    },
+                    "last": {
+                        "type": "boolean"
+                    },
+                    "numberOfElements": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "size": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "content": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/TransactionResponse"
+                        }
+                    },
+                    "number": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "sort": {
+                        "$ref": "#/components/schemas/SortObject"
+                    },
+                    "empty": {
+                        "type": "boolean"
+                    }
+                }
+            },
+            "PageableObject": {
+                "type": "object",
+                "properties": {
+                    "paged": {
+                        "type": "boolean"
+                    },
+                    "pageNumber": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "pageSize": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "unpaged": {
+                        "type": "boolean"
+                    },
+                    "offset": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "sort": {
+                        "$ref": "#/components/schemas/SortObject"
+                    }
+                }
+            },
+            "SortObject": {
+                "type": "object",
+                "properties": {
+                    "sorted": {
+                        "type": "boolean"
+                    },
+                    "unsorted": {
+                        "type": "boolean"
+                    },
+                    "empty": {
+                        "type": "boolean"
+                    }
+                }
+            },
+            "MeResponse": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Tip": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string"
+                    },
+                    "severity": {
+                        "type": "string",
+                        "enum": [
+                            "INFO",
+                            "WARNING",
+                            "ALERT"
+                        ]
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "amount": {
+                        "type": "number"
+                    }
+                }
+            },
+            "RecurringPayment": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "category": {
+                        "type": "string"
+                    },
+                    "frequency": {
+                        "type": "string",
+                        "enum": [
+                            "WEEKLY",
+                            "MONTHLY",
+                            "QUARTERLY",
+                            "YEARLY"
+                        ]
+                    },
+                    "typicalAmount": {
+                        "type": "number"
+                    },
+                    "monthlyEquivalent": {
+                        "type": "number"
+                    },
+                    "occurrences": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "lastDate": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "nextExpectedDate": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "active": {
+                        "type": "boolean"
+                    }
+                }
+            },
+            "Category": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                }
+            },
+            "SubCategory": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                }
+            },
+            "BudgetStatus": {
+                "type": "object",
+                "properties": {
+                    "categoryId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "category": {
+                        "type": "string"
+                    },
+                    "month": {
+                        "type": "string"
+                    },
+                    "monthlyLimit": {
+                        "type": "number"
+                    },
+                    "spent": {
+                        "type": "number"
+                    },
+                    "remaining": {
+                        "type": "number"
+                    },
+                    "percentUsed": {
+                        "type": "number"
+                    },
+                    "projectedSpend": {
+                        "type": "number"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "ON_TRACK",
+                            "WARNING",
+                            "EXCEEDED"
+                        ]
+                    }
+                }
+            },
+            "Bank": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "logo": {
+                        "type": "string"
+                    },
+                    "country": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    }
+}

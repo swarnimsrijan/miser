@@ -1,0 +1,18 @@
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  exclude:
+    # Generated OpenAPI client: regenerate with tool/generate_api.sh instead of editing.
+    - packages/miser_api/**
+    - build/**
+    - android/**
+    - ios/**
+    - web/**
+  language:
+    strict-casts: true
+
+linter:
+  rules:
+    - prefer_single_quotes
+    - avoid_print
+    - unawaited_futures
